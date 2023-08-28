@@ -23,7 +23,8 @@ import {
 } from "@/components/ui/form";
 
 import { Input } from "@/components/ui/input";
-import useHidrationFix from "../hooks/useHidrationFix";
+
+import { useEffect, useState } from "react";
 
 const formSchema = z.object({
   name: z.string().nonempty("Server name is required"),
@@ -31,7 +32,11 @@ const formSchema = z.object({
 });
 
 export default function InitialModal() {
-  useHidrationFix();
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -45,7 +50,7 @@ export default function InitialModal() {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     console.log(values);
   };
-
+  if (!isMounted) return null;
   return (
     <Dialog open>
       <DialogContent className="bg-white text-black p-0 overflow-hidden">
